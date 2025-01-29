@@ -12,8 +12,7 @@ pub fn game_loop(){
     let mut board_location: usize;
     let mut grid_location : usize;
 
-   // draw_board(&board);
-    draw_board(&board);
+   
 
     print!("Enter a move: ");
     io::stdout().flush().unwrap();
@@ -24,6 +23,8 @@ pub fn game_loop(){
     io::stdin().read_line(&mut input).unwrap();
 
     board_location = input.trim().parse().unwrap();
+
+    draw_board(&board, board_location);
 
     loop {
         print!("Enter a move: ");
