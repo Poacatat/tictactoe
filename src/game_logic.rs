@@ -8,24 +8,52 @@ pub fn game_loop(){
    // make_move(&mut board, 1, 1, Cell::Cross);
     let mut piece_type: Cell = Cell::Cross;
     let mut viable:bool;
+
+    let mut board_location: usize;
+    let mut grid_location : usize;
+
    // draw_board(&board);
+    draw_board(&board);
+
+    print!("Enter a move: ");
+    io::stdout().flush().unwrap();
+
+    let mut input = String::new();
+    
+    // Read the input from the user
+    io::stdin().read_line(&mut input).unwrap();
+
+    board_location = input.trim().parse().unwrap();
+
     loop {
         print!("Enter a move: ");
+
         io::stdout().flush().unwrap();
-
         let mut input = String::new();
-        
-        // Read the input from the user
-        io::stdin().read_line(&mut input).unwrap();
-
-        let input: usize = input.trim().parse().unwrap();
+        io::stdin().read_line(&mut input).expect("Failed to read input");
 
 
-        viable = make_move(&mut board, 0, input, piece_type);
+        //shitty fix handle this correctly
+        grid_location =0;
+
+        match parse_grid_location(&input) {
+            Ok(grid_location) => {
+                println!("Valid input: {}", grid_location);
+                println!("{}", grid_location);
+            }
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                continue;
+            }
+        }
+
+        //grid_location = input.trim().parse().unwrap();
+        viable = make_move(&mut board, board_location,grid_location,piece_type);
 
         if viable{
-            draw_board(&board);
+            draw_board(&board, board_location);
             if piece_type == Cell::Cross {piece_type = Cell::Naught}else{piece_type=Cell::Cross}
+            board_location = grid_location; 
         }else{
             println!("That spot is unavailable");
         }
@@ -51,15 +79,7 @@ pub fn make_move(board: &mut [[Cell;BOARD_SIZE];BOARD_SIZE], board_location: usi
     //place piece
 }
 
-fn place_piece(board: &mut [[Cell;BOARD_SIZE];BOARD_SIZE], board_location: usize, grid_location: usize, piece_type: Cell){
-    if piece_type == Cell::Naught{
-        println!("Massive bug in game_logic.rs");
-    }   
-    board[board_location][grid_location] = piece_type;
-    
-    check_three_in_a_row(&board[board_location], grid_location);
 
-}
 
 
 fn check_three_in_a_row(grid: &[Cell;BOARD_SIZE], placed: usize) -> bool{
@@ -118,4 +138,15 @@ pub fn game_logic_test(){
     assert_eq!(check_diagonal(&board[8]), true);
     assert_eq!(check_across(&board[8], 7), false);
     assert_eq!(check_down(&board[8], 7), false);
+}
+
+
+
+fn parse_grid_location(input: &str) -> Result<usize, String> {
+    match input.trim().parse::<isize>() {
+        Ok(num) if num < 0 => Err("Number cannot be negative".to_string()),
+        Ok(num) if num > 8 => Err("Number cannot be greater than 8".to_string()),
+        Ok(num) => Ok(num as usize), // Convert to usize safely
+        Err(_) => Err("Invalid input: Please enter a valid number between 0 and 8".to_string()),
+    }
 }
