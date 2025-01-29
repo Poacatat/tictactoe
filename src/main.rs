@@ -64,9 +64,6 @@ fn check_down(grid: &[Cell;BOARD_SIZE], placed: usize) -> bool{
 }
 
 
-
-
-
 fn check_across(grid: &[Cell;BOARD_SIZE], placed: usize) -> bool{
 
     let cell_type: Cell = grid[placed];

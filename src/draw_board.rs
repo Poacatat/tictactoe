@@ -32,9 +32,7 @@ fn draw_board_row(board : &[[Cell;BOARD_SIZE];BOARD_SIZE], row: usize){
             print!(" | ");
         }
     }
-    if row == 2{return}
-    if row == 5{return}
-    if row == 8{return}
+    if row % 3 == 2{return}
     println!();
     println!("---+---+--- | ---+---+--- | ---+---+---");
 }
